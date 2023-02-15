@@ -1,0 +1,33 @@
+h1, h2, h3{
+    color: black;
+    font-weight: 400;
+    background: #eaeaea;
+    font-size: 18px;
+    background: linear-gradient(50deg, wheat, white);
+
+}
+
+.shot-desc{
+    color: #707070;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 16px;
+}
+
+.long-desc {
+    color: #484343;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: left;
+}
+
+.characteristic{
+    font-weight: bold;
+    font-size: 100%;
+}
+
+body{
+    background: linear-gradient(50deg, wheat, white);
+    font-family: "Roboto", serif;
+}
