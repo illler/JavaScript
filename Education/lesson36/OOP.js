@@ -13,10 +13,6 @@ const soldier = {
     }
 };
 
-// const john = {
-//     health: 100
-// }
-
 const john = Object.create(soldier);
 
 console.log(john.armor);
