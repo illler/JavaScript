@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .datepicker {
+            width: 300px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .month {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .date {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .weekdays {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .days {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .day {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 5px;
+            margin-right: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .day.selected {
+            background-color: #0080ff;
+            color: #fff;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .cancel-btn {
+            background-color: #ccc;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .apply-btn {
+            background-color: #0080ff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+<div class="datepicker">
+    <div class="month">
+        <button class="prev-month">&lt;</button>
+        <div class="date"></div>
+        <button class="next-month">&gt;</button>
+    </div>
+    <div class="weekdays">
+        <div>Sun</div>
+        <div>Mon</div>
+        <div>Tue</div>
+        <div>Wed</div>
+        <div>Thu</div>
+        <div>Fri</div>
+        <div>Sat</div>
+    </div>
+    <div class="days"></div>
+    <div class="buttons">
+        <button class="cancel-btn">Cancel</button>
+        <button class="apply-btn">Apply</button>
+    </div>
+</div>
+<script defer>
+    const datepicker = document.querySelector('.datepicker');
+    const prevMonthBtn = datepicker.querySelector('.prev-month');
+    const nextMonthBtn = datepicker.querySelector('.next-month');
+    const dateEl = datepicker.querySelector('.date');
+    const daysEl = datepicker.querySelector('.days');
+    const cancelBtn = datepicker.querySelector('.cancel-btn');
+    const applyBtn = datepicker.querySelector('.apply-btn');
+
+    const currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+    let startDate = null;
+    let endDate = null;
+
+    function renderCalendar() {
+        dateEl.textContent = new Date(currentYear, currentMonth).toLocaleString('', {month: 'long', year: 'numeric'});
+
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+        const daysInMonth = lastDayOfMonth.getDate();
+
+// Clear any existing days from the days element
+        daysEl.innerHTML = '';
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dayEl = document.createElement('div');
+            dayEl.classList.add('day');
+            dayEl.textContent = i;
+            // Add a click event listener to the day element
+            dayEl.addEventListener('click', () => {
+                // If the start date hasn't been set yet, set it to the clicked date
+                if (startDate === null) {
+                    startDate = new Date(currentYear, currentMonth, i);
+                    dayEl.classList.add('selected');
+                }
+                // If the start date has been set and the end date hasn't, set the end date to the clicked date
+                else if (endDate === null) {
+                    endDate = new Date(currentYear, currentMonth, i);
+                    dayEl.classList.add('selected');
+
+                    // If the end date is before the start date, swap the dates
+                    if (endDate < startDate) {
+                        const temp = startDate;
+                        startDate = endDate;
+                        endDate = temp;
+                    }
+
+                    // Highlight all the days between the start and end dates
+                    const days = daysEl.querySelectorAll('.day');
+                    days.forEach((day) => {
+                        const date = new Date(currentYear, currentMonth, day.textContent);
+                        if (date >= startDate && date <= endDate) {
+                            day.classList.add('selected');
+                        }
+                    });
+                }
+                // If both the start and end dates have been set, reset the selection
+                else {
+                    startDate = new Date(currentYear, currentMonth, i);
+                    endDate = null;
+
+                    const days = daysEl.querySelectorAll('.day');
+                    days.forEach((day) => {
+                        day.classList.remove('selected');
+                    });
+
+                    dayEl.classList.add('selected');
+                }
+            });
+
+// Add the day element to the days element
+            daysEl.appendChild(dayEl);
+// Add a click event listener to the day element
+            dayEl.addEventListener('click', () => {
+                // If the start date hasn't been set yet, set it to the clicked date
+                if (startDate === null) {
+                    startDate = new Date(currentYear, currentMonth, i);
+                    dayEl.classList.add('selected');
+                }
+                // If the start date has been set and the end date hasn't, set the end date to the clicked date
+                else if (startDate !== null && endDate === null) {
+                    endDate = new Date(currentYear, currentMonth, i);
+                    dayEl.classList.add('selected');
+
+                    // If the end date is before the start date, swap the dates
+                    if (endDate < startDate) {
+                        const temp = startDate;
+                        startDate = endDate;
+                        endDate = temp;
+                    }
+
+                    // Highlight all the days between the start and end dates
+                    const days = daysEl.querySelectorAll('.day');
+                    days.forEach((day) => {
+                        const date = new Date(currentYear, currentMonth, day.textContent);
+                        if (date >= startDate && date <= endDate) {
+                            day.classList.add('selected');
+                        }
+                    });
+                }
+                // If both the start and end dates have been set, reset the selection
+                else {
+                    startDate = new Date(currentYear, currentMonth, i);
+                    endDate = null;
+
+                    const days = daysEl.querySelectorAll('.day');
+                    days.forEach((day) => {
+                        day.classList.remove('selected');
+                    });
+
+                    dayEl.classList.add('selected');
+                }
+            });
+
+// Add the day element to the days element
+            daysEl.appendChild(dayEl);
+        }
+    }
+    prevMonthBtn.addEventListener('click', () => {
+        if (currentMonth > 0) {
+            currentMonth--;
+        } else {
+            currentMonth = 11;
+            currentYear--;
+        }
+        renderCalendar();
+    });
+
+    nextMonthBtn.addEventListener('click', () => {
+        if (currentMonth < 11) {
+            currentMonth++;
+        } else {
+            currentMonth = 0;
+            currentYear++;
+        }
+        renderCalendar();
+    });
+
+    // Add click event listeners to the cancel and apply buttons
+    cancelBtn.addEventListener('click', () => {
+        startDate = null;
+        endDate = null;
+
+        const days = daysEl.querySelectorAll('.day');
+        days.forEach((day) => {
+            day.classList.remove('selected');
+        });
+    });
+
+    applyBtn.addEventListener('click', () => {
+        console.log(`Selected range: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`);
+    });
+
+    // Render the initial calendar
+    renderCalendar();
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+body{
+
+}
+
+.canvas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 600px;
+    background-image: url(https://cojo.ru/wp-content/uploads/2022/12/pikselnyi-peizazh-13-1.webp);
+    background-size: cover;
+}
+
+.trunk,
+.branch {
+    border-radius: 25px;
+    background: linear-gradient(to right, #7f3333, #4d2020);
+}
+
+.trunk {
+    position: relative;
+
+    width: 10px;
+    height: 500px;
+    margin: 0 auto;
+}
+
+.branch {
+    position: absolute;
+
+    width: 5px;
+}
+
+.branch:nth-child(even) {
+    transform: rotate(60deg);
+}
+
+.branch:nth-child(odd) {
+    transform: rotate(-60deg);
+}
+
+.branch {
+    position: absolute;
+
+    width: 5px;
+
+    transform-origin: bottom center;
+}
+
+.branch:nth-child(1) {
+    top: 180px;
+
+    height: 180px;
+}
+
+.branch:nth-child(2) {
+    top: 160px;
+
+    height: 150px;
+}
+
+.branch:nth-child(3) {
+    top: 10px;
+
+    height: 60px;
+}
+
+
+.branch:nth-child(4) {
+    top: 110px;
+
+    height: 130px;
+}
+
+.branch:nth-child(5) {
+    top: 110px;
+
+    height: 130px;
+}
+
+.branch:nth-child(6) {
+    top: 80px;
+
+    height: 100px;
+}
+
+.branch:nth-child(7) {
+    top: 80px;
+
+    height: 100px;
+}
+
+.branch:nth-child(8) {
+    top: 60px;
+
+    height: 100px;
+}
+
+.branch:nth-child(10) {
+    top: 180px;
+
+    height: 180px;
+}
+
+.branch:nth-child(11) {
+    top: 160px;
+
+    height: 150px;
+}
+
+.branch:nth-child(12) {
+    top: 20px;
+
+    height: 80px;
+}
+
+
+.branch:nth-child(13) {
+    top: 30px;
+
+    height: 80px;
+}
+
+.branch:nth-child(9) {
+    top: 36px;
+
+    height: 90px;
+}
+
+.branch:nth-child(14) {
+    top: 20px;
+
+    height: 70px;
+}
+
+.leaf {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 75% 0 75% 0;
+    background: linear-gradient(to right, #1f92ef, #290238);
+}
+
+.leaf:nth-child(1) {
+    top: 5px;
+}
+
+.leaf:nth-child(2) {
+    top: 20px;
+}
+
+@keyframes leaf-odd-grow {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+
+
+.leaf:nth-child(odd) {
+    left: 100%;
+    transform-origin: 0% 100%;
+    animation-name: leaf-odd-grow;
+    animation-duration: 4s;
+    animation-fill-mode: both;
+}
+
+@keyframes leaf-even-grow {
+    0% {
+        transform: rotate(-90deg) scale(0);
+    }
+    100% {
+        transform: rotate(-90deg) scale(1);
+    }
+}
+
+.leaf:nth-child(even) {
+    left: -150%;
+    transform-origin: 50% 100%;
+    animation-name: leaf-even-grow;
+    animation-duration: 4s;
+    animation-fill-mode: both;
+}
+
+.leaf:nth-child(1) {
+    top: 5px;
+    animation-delay: 3.5s;
+}
+
+.leaf:nth-child(2) {
+    top: 20px;
+    animation-delay: 3s;
+}
+
+.leaf:nth-child(3) {
+    top: 50px;
+    animation-delay: 2.5s;
+}
+
+.leaf:nth-child(4) {
+    top: 60px;
+    animation-delay: 3.5s;
+}
+
+.leaf:nth-child(5) {
+    top: 90px;
+    animation-delay: 3s;
+}
+
+.leaf:nth-child(6) {
+    top: 100px;
+    animation-delay: 2.5s;
+}
+
+
+.blueberry {
+    position: absolute;
+    width:1em;
+    height: 1em;
+    top: 0.6em;
+    left:0.4em;
+    border-radius: 50%;
+    background-color: #89a2ca;
+    box-shadow: inset 0.2em -.2em  #6081B8;
+}
+
+.blueberry:before{
+    content: "";
+    width: 0;
+    height: 1em;
+    left: 2em;
+    position: absolute;
+    background-color: #3e4d64;
+    border-radius:50%;
+}
+
+@keyframes blueberry-even-grow {
+    0% {
+        transform: rotate(-0deg) scale(0);
+    }
+    100% {
+        transform: rotate(-0deg) scale(1);
+    }
+}
+.blueberry:nth-child(odd){
+    left: 100%;
+    transform-origin: 0% 100%;
+    animation-name: blueberry-even-grow;
+    animation-duration: 4s;
+    animation-fill-mode: both;
+    transform: rotate(0deg);
+}
+
+.blueberry:nth-child(1) {
+    top: 5px;
+    animation-delay: 3.5s;
+}
+
+.blueberry:nth-child(2) {
+    top: 20px;
+    animation-delay: 3s;
+}
+
+
