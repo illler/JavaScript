@@ -1,99 +1,104 @@
-'use strict';
-
-document.addEventListener('DOMContentLoaded', function () {
-
-    const movieDB = {
-        movies: [
-            "Логан",
-            "Лига справедливости",
-            "Ла-ла лэнд",
-            "Одержимость",
-            "Скотт Пилигрим против..."
-        ]
-    };
-
-// 1) Удалить все рекламные блоки со страницы (правая часть сайта)
-    const add = document.getElementsByClassName('promo__adv');
-    for (let i = 0; i < add.length; i++) {
-        add[i].remove()
+class Movie {
+    constructor(movies) {
+        this.movies = movies;
     }
-// 2) Изменить жанр фильма, поменять "комедия" на "драма"
-    let drama = document.querySelector('.promo__genre');
-    drama.textContent = 'Драма';
 
-// 3) Изменить задний фон постера с фильмом на изображение "bg.jpg". Оно лежит в папке img.
-//     Реализовать только при помощи JS
-    let picture = document.querySelector('.promo__bg');
-    picture.style.backgroundImage ='url("img/bg.jpg")';
+    removeAds() {
+        const ads = document.querySelector('.promo__adv');
+        ads.remove();
+    }
 
-// 4) Список фильмов на странице сформировать на основании данных из этого JS файла.
-//     Отсортировать их по алфавиту
-    const listMovie = document.querySelector('.promo__interactive-list');
-    movieDB.movies.sort();
+    changeGenre() {
+        const genre = document.querySelector('.promo__genre');
+        genre.textContent = 'Драма';
+    }
 
+    changeBackground() {
+        const bg = document.querySelector('.promo__bg');
+        bg.style.backgroundImage = 'url("img/bg.jpg")';
+    }
 
+    sortMovies() {
+        this.movies.sort();
+    }
 
-// 6) Реализовать функционал, что после заполнения формы и нажатия кнопки "Подтвердить" -
-// новый фильм добавляется в список. Страница не должна перезагружаться.
-//     Новый фильм должен добавляться в movieDB.movies.
-//     Для получения доступа к значению input - обращаемся к нему как input.value;
-// P.S. Здесь есть несколько вариантов решения задачи, принимается любой, но рабочий.
-// 7) Если в форме стоит галочка "Сделать любимым" - в консоль вывести сообщение:
-//     "Добавляем любимый фильм"
-// 8) Фильмы должны быть отсортированы по алфавиту
-
-    const form = document.querySelector(".add"),
-        input = form.querySelector(".adding__input"),
-        checkbox = form.querySelector('[type="checkbox"]');
-
-    form.addEventListener('submit', function (event){
-        event.preventDefault();
-        if (checkbox.checked){
-            console.log('Добавляем любимый фильм')
+    addMovie(movieTitle, isFavorite) {
+        if (isFavorite) {
+            console.log('Добавляем любимый фильм');
         }
-        movieDB.movies.push(input.value);
-        movieDB.movies.sort();
+        this.movies.push(movieTitle);
+        this.sortMovies();
+        this.updateMovieList();
+    }
 
-        createMovieList(movieDB.movies, listMovie);
-
-        form.reset();
-    })
-// 9) Если название фильма больше, чем 21 символ - обрезать его и добавить три точки
-    for (let i = 0; i < movieDB.movies.length; i++) {
-        let oldName = movieDB.movies[i];
-        if (oldName.length>21){
-            movieDB.movies[i] = oldName.substring(0, 21) + "...";
+    truncateMovieTitle() {
+        for (let i = 0; i < this.movies.length; i++) {
+            let oldName = this.movies[i];
+            if (oldName.length > 21) {
+                this.movies[i] = oldName.substring(0, 21) + "...";
+            }
         }
     }
-// 10) При клике на мусорную корзину - элемент будет удаляться из списка (сложно)
 
+    updateMovieList() {
+        const list = document.querySelector('.promo__interactive-list');
+        list.innerHTML = '';
 
+        this.movies.forEach((movie, i) => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('promo__interactive-item');
+            listItem.textContent = `${i+1}. ${movie}`;
 
+            const deleteButton = document.createElement('div');
+            deleteButton.classList.add('delete');
+            listItem.appendChild(deleteButton);
 
-    /* 5) Добавить нумерацию выведенных фильмов */
-    createMovieList(movieDB.movies, listMovie);
+            list.appendChild(listItem);
+        });
 
-    function createMovieList(films, parent){
-        parent.innerHTML='';
-        films.sort();
-
-        films.forEach((film,  i)=>{
-            parent.innerHTML += `<li class="promo__interactive-item">${i+1}. ${film}
-                            <div class="delete"></div>
-                </li>`;
-        })
-
-        deleteItems();
+        this.attachDeleteHandlers();
     }
 
-    function deleteItems() {
-        const deleteItem = document.querySelectorAll('.delete');
-        deleteItem.forEach((item, i) =>{
-            item.addEventListener('click', () =>{
-                item.parentElement.remove();
-                movieDB.movies.slice(i, 1);
-                createMovieList(movieDB.movies, listMovie);
+    attachDeleteHandlers() {
+        const deleteButtons = document.querySelectorAll('.delete');
+        deleteButtons.forEach((button, i) => {
+            button.addEventListener('click', () => {
+                this.movies.splice(i, 1);
+                this.updateMovieList();
             });
         });
     }
+
+}
+
+const movieDB = new Movie([
+    "Логан",
+    "Лига справедливости",
+    "Ла-ла лэнд",
+    "Одержимость",
+    "Скотт Пилигрим против..."
+]);
+
+document.addEventListener('DOMContentLoaded', () => {
+    movieDB.removeAds();
+    movieDB.changeGenre();
+    movieDB.changeBackground();
+    movieDB.sortMovies();
+    movieDB.truncateMovieTitle();
+    movieDB.updateMovieList();
+
+    const form = document.querySelector('.add');
+    const input = form.querySelector('.adding__input');
+    const checkbox = form.querySelector('[type="checkbox"]');
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const isFavorite = checkbox.checked;
+        const movieTitle = input.value.trim();
+
+        if (movieTitle) {
+            movieDB.addMovie(movieTitle, isFavorite);
+            form.reset();
+        }
+    });
 });
