@@ -1,6 +1,8 @@
 class Movie {
     constructor(movies) {
         this.movies = movies;
+        this.ratings = Array.from({length: movies.length}, () => Math.floor(Math.random() * 10) + 1);
+        this.showingRatings = false;
     }
 
     removeAds() {
@@ -20,6 +22,7 @@ class Movie {
 
     sortMovies() {
         this.movies.sort();
+        this.ratings.sort();
     }
 
     addMovie(movieTitle, isFavorite) {
@@ -27,6 +30,7 @@ class Movie {
             console.log('Добавляем любимый фильм');
         }
         this.movies.push(movieTitle);
+        this.ratings.push(Math.floor(Math.random() * 10) + 1);
         this.sortMovies();
         this.updateMovieList();
     }
@@ -44,17 +48,31 @@ class Movie {
         const list = document.querySelector('.promo__interactive-list');
         list.innerHTML = '';
 
-        this.movies.forEach((movie, i) => {
-            const listItem = document.createElement('li');
-            listItem.classList.add('promo__interactive-item');
-            listItem.textContent = `${i+1}. ${movie}`;
+        if (this.showingRatings) {
+            for (let i = 0; i < this.movies.length; i++) {
+                const listItem = document.createElement('li');
+                listItem.classList.add('promo__interactive-item');
+                listItem.textContent = `${i + 1}. ${this.movies[i]} - ${this.ratings[i]}/10`;
 
-            const deleteButton = document.createElement('div');
-            deleteButton.classList.add('delete');
-            listItem.appendChild(deleteButton);
+                const deleteButton = document.createElement('div');
+                deleteButton.classList.add('delete');
+                listItem.appendChild(deleteButton);
 
-            list.appendChild(listItem);
-        });
+                list.appendChild(listItem);
+            }
+        } else {
+            for (let i = 0; i < this.movies.length; i++) {
+                const listItem = document.createElement('li');
+                listItem.classList.add('promo__interactive-item');
+                listItem.textContent = `${i + 1}. ${this.movies[i]}`;
+
+                const deleteButton = document.createElement('div');
+                deleteButton.classList.add('delete');
+                listItem.appendChild(deleteButton);
+
+                list.appendChild(listItem);
+            }
+        }
 
         this.attachDeleteHandlers();
     }
@@ -64,11 +82,16 @@ class Movie {
         deleteButtons.forEach((button, i) => {
             button.addEventListener('click', () => {
                 this.movies.splice(i, 1);
+                this.ratings.splice(i, 1);
                 this.updateMovieList();
             });
         });
     }
 
+    applyFunctionToMovies(fn) {
+        this.movies = this.movies.map(fn);
+        this.updateMovieList();
+    }
 }
 
 const movieDB = new Movie([
@@ -90,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.add');
     const input = form.querySelector('.adding__input');
     const checkbox = form.querySelector('[type="checkbox"]');
+    const btn = document.querySelector(".show-rating");
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -100,5 +124,22 @@ document.addEventListener('DOMContentLoaded', () => {
             movieDB.addMovie(movieTitle, isFavorite);
             form.reset();
         }
+    });
+
+    btn.addEventListener('click', () => {
+        if (movieDB.showingRatings) {
+            movieDB.showingRatings = false;
+            btn.textContent = 'Показать рейтинг';
+        } else {
+            movieDB.showingRatings = true;
+            btn.textContent = 'Скрыть рейтинг';
+        }
+        movieDB.updateMovieList();
+    });
+
+    // Пример использования метода для приведения всех названий фильмов к нижнему регистру
+    const lowerCaseBtn = document.querySelector(".reverse");
+    lowerCaseBtn.addEventListener('click', () => {
+        movieDB.applyFunctionToMovies((movie) => movie.split('').reverse().join(''));
     });
 });
